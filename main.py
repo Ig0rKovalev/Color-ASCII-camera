@@ -4,24 +4,27 @@ import numpy as np
 
 
 DENSITY = ' .",:;!~+-cba*#W&8@'
-LEN_DENSITY = 255 / len(DENSITY)
+LEN_DENSITY = 256 / len(DENSITY)
 
 
 def drow(img, height, width):
     img_new = Image.new("RGBA", (height, width), 'black')
 
     draw = ImageDraw.Draw(img_new)
-    font = ImageFont.truetype("courier.ttf", 10)
+    font = ImageFont.truetype("courier.ttf", 7)
 
     for i in range(0, width, 5):
         for j in range(0, height, 5):
             b, g, r = img[i, j]
-            pixelIndex = int(((b + g + r) // 3) // LEN_DENSITY)
-            if (((b + g + r) // 3) % LEN_DENSITY) == 0 and pixelIndex != 0:
-                draw.text((j, i), DENSITY[pixelIndex], fill=(r, g, b), font=font)
+            b = int(b)
+            g = int(g)
+            r = int(r)
+            pixelIndex = int((b + g + r) // 3 // LEN_DENSITY)
+            if int((((b + g + r) // 3) % LEN_DENSITY)) == 0 and pixelIndex != 0:
+                draw.text((j, i), DENSITY[pixelIndex-1], fill=(r, g, b), font=font)
             else:
-                draw.text((j, i), DENSITY[pixelIndex + 1], fill=(r, g, b), font=font)
-
+                draw.text((j, i), DENSITY[pixelIndex], fill=(r, g, b), font=font)
+                
     cv2_im_processed = cv2.cvtColor(np.array(img_new), cv2.COLOR_RGB2BGR)
     cv2.imshow("main", cv2_im_processed)
 
